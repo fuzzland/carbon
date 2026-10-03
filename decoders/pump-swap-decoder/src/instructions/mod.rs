@@ -8,6 +8,8 @@ pub mod admin_set_coin_creator;
 pub mod admin_set_coin_creator_event;
 pub mod admin_update_token_incentives;
 pub mod admin_update_token_incentives_event;
+pub mod boost_buy_and_burn;
+pub mod boost_buy_and_burn_event;
 pub mod buy;
 pub mod buy_event;
 pub mod buy_exact_quote_in;
@@ -27,15 +29,20 @@ pub mod disable;
 pub mod disable_event;
 pub mod extend_account;
 pub mod extend_account_event;
+pub mod init_boost;
+pub mod init_boost_event;
 pub mod init_user_volume_accumulator;
 pub mod init_user_volume_accumulator_event;
 pub mod sell;
 pub mod sell_event;
 pub mod set_bonding_curve_coin_creator_event;
+pub mod set_boost_authority;
+pub mod set_boost_authority_event;
 pub mod set_coin_creator;
 pub mod set_metaplex_coin_creator_event;
 pub mod sync_user_volume_accumulator;
 pub mod sync_user_volume_accumulator_event;
+pub mod toggle_boost;
 pub mod update_admin;
 pub mod update_admin_event;
 pub mod update_fee_config;
@@ -56,6 +63,7 @@ pub mod withdraw_event;
 pub enum PumpSwapInstruction {
     AdminSetCoinCreator(admin_set_coin_creator::AdminSetCoinCreator),
     AdminUpdateTokenIncentives(admin_update_token_incentives::AdminUpdateTokenIncentives),
+    BoostBuyAndBurn(boost_buy_and_burn::BoostBuyAndBurn),
     Buy(buy::Buy),
     ClaimTokenIncentives(claim_token_incentives::ClaimTokenIncentives),
     CloseUserVolumeAccumulator(close_user_volume_accumulator::CloseUserVolumeAccumulator),
@@ -65,10 +73,13 @@ pub enum PumpSwapInstruction {
     Deposit(deposit::Deposit),
     Disable(disable::Disable),
     ExtendAccount(extend_account::ExtendAccount),
+    InitBoost(init_boost::InitBoost),
     InitUserVolumeAccumulator(init_user_volume_accumulator::InitUserVolumeAccumulator),
     Sell(sell::Sell),
+    SetBoostAuthority(set_boost_authority::SetBoostAuthority),
     SetCoinCreator(set_coin_creator::SetCoinCreator),
     SyncUserVolumeAccumulator(sync_user_volume_accumulator::SyncUserVolumeAccumulator),
+    ToggleBoost(toggle_boost::ToggleBoost),
     UpdateAdmin(update_admin::UpdateAdmin),
     UpdateFeeConfig(update_fee_config::UpdateFeeConfig),
     Withdraw(withdraw::Withdraw),
@@ -76,6 +87,7 @@ pub enum PumpSwapInstruction {
     AdminUpdateTokenIncentivesEvent(
         admin_update_token_incentives_event::AdminUpdateTokenIncentivesEvent,
     ),
+    BoostBuyAndBurnEvent(boost_buy_and_burn_event::BoostBuyAndBurnEvent),
     BuyEvent(buy_event::BuyEvent),
     ClaimTokenIncentivesEvent(claim_token_incentives_event::ClaimTokenIncentivesEvent),
     CloseUserVolumeAccumulatorEvent(
@@ -87,10 +99,12 @@ pub enum PumpSwapInstruction {
     DepositEvent(deposit_event::DepositEvent),
     DisableEvent(disable_event::DisableEvent),
     ExtendAccountEvent(extend_account_event::ExtendAccountEvent),
+    InitBoostEvent(init_boost_event::InitBoostEvent),
     InitUserVolumeAccumulatorEvent(
         init_user_volume_accumulator_event::InitUserVolumeAccumulatorEvent,
     ),
     SellEvent(sell_event::SellEvent),
+    SetBoostAuthorityEvent(set_boost_authority_event::SetBoostAuthorityEvent),
     SetBondingCurveCoinCreatorEvent(
         set_bonding_curve_coin_creator_event::SetBondingCurveCoinCreatorEvent,
     ),
@@ -130,6 +144,7 @@ impl carbon_core::instruction::InstructionDecoder<'_> for PumpSwapDecoder {
         carbon_core::try_decode_instructions!(instruction,
             PumpSwapInstruction::AdminSetCoinCreator => admin_set_coin_creator::AdminSetCoinCreator,
             PumpSwapInstruction::AdminUpdateTokenIncentives => admin_update_token_incentives::AdminUpdateTokenIncentives,
+            PumpSwapInstruction::BoostBuyAndBurn => boost_buy_and_burn::BoostBuyAndBurn,
             PumpSwapInstruction::Buy => buy::Buy,
             PumpSwapInstruction::ClaimTokenIncentives => claim_token_incentives::ClaimTokenIncentives,
             PumpSwapInstruction::CloseUserVolumeAccumulator => close_user_volume_accumulator::CloseUserVolumeAccumulator,
@@ -139,15 +154,19 @@ impl carbon_core::instruction::InstructionDecoder<'_> for PumpSwapDecoder {
             PumpSwapInstruction::Deposit => deposit::Deposit,
             PumpSwapInstruction::Disable => disable::Disable,
             PumpSwapInstruction::ExtendAccount => extend_account::ExtendAccount,
+            PumpSwapInstruction::InitBoost => init_boost::InitBoost,
             PumpSwapInstruction::InitUserVolumeAccumulator => init_user_volume_accumulator::InitUserVolumeAccumulator,
             PumpSwapInstruction::Sell => sell::Sell,
+            PumpSwapInstruction::SetBoostAuthority => set_boost_authority::SetBoostAuthority,
             PumpSwapInstruction::SetCoinCreator => set_coin_creator::SetCoinCreator,
             PumpSwapInstruction::SyncUserVolumeAccumulator => sync_user_volume_accumulator::SyncUserVolumeAccumulator,
+            PumpSwapInstruction::ToggleBoost => toggle_boost::ToggleBoost,
             PumpSwapInstruction::UpdateAdmin => update_admin::UpdateAdmin,
             PumpSwapInstruction::UpdateFeeConfig => update_fee_config::UpdateFeeConfig,
             PumpSwapInstruction::Withdraw => withdraw::Withdraw,
             PumpSwapInstruction::AdminSetCoinCreatorEvent => admin_set_coin_creator_event::AdminSetCoinCreatorEvent,
             PumpSwapInstruction::AdminUpdateTokenIncentivesEvent => admin_update_token_incentives_event::AdminUpdateTokenIncentivesEvent,
+            PumpSwapInstruction::BoostBuyAndBurnEvent => boost_buy_and_burn_event::BoostBuyAndBurnEvent,
             PumpSwapInstruction::BuyEvent => buy_event::BuyEvent,
             PumpSwapInstruction::ClaimTokenIncentivesEvent => claim_token_incentives_event::ClaimTokenIncentivesEvent,
             PumpSwapInstruction::CloseUserVolumeAccumulatorEvent => close_user_volume_accumulator_event::CloseUserVolumeAccumulatorEvent,
@@ -157,8 +176,10 @@ impl carbon_core::instruction::InstructionDecoder<'_> for PumpSwapDecoder {
             PumpSwapInstruction::DepositEvent => deposit_event::DepositEvent,
             PumpSwapInstruction::DisableEvent => disable_event::DisableEvent,
             PumpSwapInstruction::ExtendAccountEvent => extend_account_event::ExtendAccountEvent,
+            PumpSwapInstruction::InitBoostEvent => init_boost_event::InitBoostEvent,
             PumpSwapInstruction::InitUserVolumeAccumulatorEvent => init_user_volume_accumulator_event::InitUserVolumeAccumulatorEvent,
             PumpSwapInstruction::SellEvent => sell_event::SellEvent,
+            PumpSwapInstruction::SetBoostAuthorityEvent => set_boost_authority_event::SetBoostAuthorityEvent,
             PumpSwapInstruction::SetBondingCurveCoinCreatorEvent => set_bonding_curve_coin_creator_event::SetBondingCurveCoinCreatorEvent,
             PumpSwapInstruction::SetMetaplexCoinCreatorEvent => set_metaplex_coin_creator_event::SetMetaplexCoinCreatorEvent,
             PumpSwapInstruction::SyncUserVolumeAccumulatorEvent => sync_user_volume_accumulator_event::SyncUserVolumeAccumulatorEvent,
